@@ -44,7 +44,7 @@ export const HERO_CONTENT: HeroContent = {
 export const PORTFOLIO_CONTENT: PortfolioContent = {
   kicker: 'Portafolio',
   title: 'Trabajo seleccionado',
-  description: 'Una selección de piezas en video y fotografía — formato vertical y horizontal.',
+  description: 'Una pincelada de algunos de mis trabajos.',
   filters: [
     { key: 'todo', label: 'Todo' },
     { key: 'video', label: 'Video' },
