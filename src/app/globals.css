@@ -2,26 +2,260 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ==========================================================================
+   Reset base
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+img,
+video {
+  max-width: 100%;
+  display: block;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+/* ==========================================================================
+   Design tokens
+   ========================================================================== */
+
+:root {
+  --color-bg: #000000;
+  --color-red: #e00505;
+  --color-white: #ffffff;
+  --color-surface: #0a0a0a;
+  --color-surface-2: #050505;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-muted: rgba(255, 255, 255, 0.55);
+  --color-muted-2: rgba(255, 255, 255, 0.48);
+  --color-red-glow: rgba(224, 5, 5, 0.45);
+  --color-red-dim: rgba(224, 5, 5, 0.12);
+
+  --font-primary: var(--font-poppins), system-ui, sans-serif;
+
+  --space-page-x: clamp(28px, 5.2vw, 96px);
+  --space-section-y: clamp(72px, 9vh, 128px);
+
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --transition-base: 0.25s var(--ease-in-out);
+  --transition-reveal: 0.9s var(--ease-out-expo);
+
+  --radius-btn: 4px;
+  --radius-card: 10px;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-white);
+  font-family: var(--font-primary);
+}
+
+/* ==========================================================================
+   Keyframes
+   ========================================================================== */
+
+@keyframes walRevealUp {
+  from {
+    transform: translateY(115%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes walFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes walFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes walMatIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.2;
+  }
+}
+
+@keyframes walWpop {
+  0% {
+    opacity: 0;
+    transform: translateY(26px) scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes walPortraitIn {
+  from {
+    opacity: 0;
+    transform: translateX(26px) scale(1.04);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes walScrollDot {
+  0% {
+    transform: translateY(-4px);
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+}
+
+@keyframes walFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-9px);
+  }
+}
+
+@keyframes walBlink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+
+@keyframes walDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ==========================================================================
+   Utilidades propias
+   ========================================================================== */
+
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(34px);
+  transition:
+    opacity var(--transition-reveal),
+    transform var(--transition-reveal);
+}
+
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.wal-service-btn {
+  transform: scale(1);
+  transition: transform 0.25s var(--ease-out-expo);
+}
+
+.wal-service-btn:hover,
+.wal-service-btn:focus-visible {
+  transform: scale(1.08);
+}
+
+.wal-service-btn:hover .wal-service-arrow,
+.wal-service-btn:focus-visible .wal-service-arrow {
+  transform: translateX(4px);
+}
+
+.wal-hero-services-nav {
+  position: static;
+  margin-top: 48px;
+}
+
+@media (min-width: 768px) {
+  .wal-hero-services-nav {
+    position: absolute;
+    margin-top: 0;
+  }
+}
+
+.wal-portfolio-card {
+  border-color: var(--color-border);
+  background-color: var(--color-surface);
+  transition:
+    border-color var(--transition-base),
+    background-color var(--transition-base);
+}
+
+.wal-portfolio-card:hover,
+.wal-portfolio-card:focus-visible {
+  border-color: var(--color-red);
+  background-color: var(--color-surface-2);
+}
+
+.wal-service-arrow {
+  transition: transform var(--transition-base);
+}
+
+/* ==========================================================================
+   Accesibilidad — reduced motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal-on-scroll {
+    opacity: 1;
+    transform: none;
   }
 }
