@@ -42,11 +42,20 @@ export const metadata: Metadata = {
     siteName: '.WAL',
     locale: 'es_CR',
     type: 'website',
+    images: [
+      {
+        url: '/images/og/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Wanderley Alvarado L. — .WAL, Social Media Content Designer',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: '.WAL — Social Media Content Designer',
     description: 'Producción audiovisual y dirección de arte para marcas que quieren liderar.',
+    images: ['/images/og/og-image.jpg'],
   },
   robots: {
     index: true,
