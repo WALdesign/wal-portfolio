@@ -24,9 +24,8 @@ export default function HeroSection() {
       >
         <div
           aria-hidden="true"
+          className="absolute inset-x-0 top-0 h-[58vh] md:h-full"
           style={{
-            position: 'absolute',
-            inset: 0,
             zIndex: 0,
           }}
         >
