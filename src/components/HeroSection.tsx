@@ -1,11 +1,11 @@
 'use client'
 
+import Image from 'next/image'
+
 import HeroGrid from '@/components/HeroGrid'
 import ServicesNav from '@/components/ServicesNav'
-import Button from '@/components/ui/Button'
 import RevealOnScroll from '@/components/ui/RevealOnScroll'
 import { HERO_CONTENT, SERVICES } from '@/lib/data'
-import { scrollToSection } from '@/lib/utils'
 
 export default function HeroSection() {
   return (
@@ -18,7 +18,38 @@ export default function HeroSection() {
         backgroundColor: 'var(--color-bg)',
       }}
     >
-      <div className="relative flex-1 flex flex-col justify-center">
+      <div
+        className="relative flex-1 flex flex-col justify-end"
+        style={{ paddingBottom: 'clamp(70px, 11vh, 110px)' }}
+      >
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 0,
+          }}
+        >
+          <Image
+            src={HERO_CONTENT.portraitSrc}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            style={{
+              objectFit: 'cover',
+              objectPosition: 'center 30%',
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              backgroundColor: 'rgba(0, 0, 0, 0.45)',
+            }}
+          />
+        </div>
+
         <HeroGrid />
 
         <div
@@ -120,32 +151,6 @@ export default function HeroSection() {
                 </strong>
                 {HERO_CONTENT.descriptionTail}
               </p>
-            </RevealOnScroll>
-
-            <RevealOnScroll delay={360}>
-              <div className="flex flex-wrap" style={{ gap: '14px' }}>
-                <Button
-                  href={HERO_CONTENT.secondaryCta.href}
-                  variant="outline"
-                  size="lg"
-                  onClick={(event) => {
-                    event.preventDefault()
-                    scrollToSection(HERO_CONTENT.secondaryCta.href.replace('#', ''))
-                  }}
-                >
-                  {HERO_CONTENT.secondaryCta.label}
-                </Button>
-
-                <Button
-                  href={HERO_CONTENT.primaryCta.href}
-                  target={HERO_CONTENT.primaryCta.external ? '_blank' : undefined}
-                  variant="primary"
-                  size="lg"
-                >
-                  {HERO_CONTENT.primaryCta.label}
-                  <span aria-hidden="true">→</span>
-                </Button>
-              </div>
             </RevealOnScroll>
           </div>
         </div>
