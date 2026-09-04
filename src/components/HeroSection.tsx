@@ -19,7 +19,7 @@ export default function HeroSection() {
       }}
     >
       <div
-        className="relative flex-1 flex flex-col justify-end"
+        className="relative flex-1 flex flex-col justify-start pt-[calc(58vh_+_20px)] md:justify-end md:pt-0"
         style={{ paddingBottom: 'clamp(70px, 11vh, 110px)' }}
       >
         <div

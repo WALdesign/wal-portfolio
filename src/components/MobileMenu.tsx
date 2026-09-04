@@ -142,7 +142,7 @@ export default function MobileMenu({ isOpen, onClose, links }: MobileMenuProps) 
               size="lg"
               className="w-full"
             >
-              Escribime al WhatsApp
+              Iniciar proyecto
             </Button>
           </div>
         </div>
