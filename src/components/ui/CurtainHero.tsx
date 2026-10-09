@@ -19,27 +19,37 @@ export default function CurtainHero({ children }: CurtainHeroProps) {
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     let frame = 0
+    let current = 0
+    let target = 0
 
-    const update = () => {
-      frame = 0
+    const measure = () => {
       const height = wrap.offsetHeight
-      const viewport = window.innerHeight
-
       // Si el Hero es más alto que la pantalla, se fija por su borde inferior para que se vea completo.
-      wrap.style.top = `${Math.min(0, viewport - height)}px`
+      wrap.style.top = `${Math.min(0, window.innerHeight - height)}px`
+      target = Math.min(1, Math.max(0, window.scrollY / Math.max(height, 1)))
+    }
 
-      if (prefersReducedMotion) return
+    const render = () => {
+      // Interpolación suave hacia el objetivo: da inercia y evita saltos entre eventos de scroll.
+      current += (target - current) * 0.12
+      if (Math.abs(target - current) < 0.0005) current = target
 
-      const progress = Math.min(1, Math.max(0, window.scrollY / Math.max(height, 1)))
-      inner.style.opacity = String(1 - progress * 0.65)
-      inner.style.transform = `scale(${1 - progress * 0.05})`
+      // Curva ease-out: el cambio arranca suave y se asienta al final.
+      const eased = 1 - Math.pow(1 - current, 3)
+      inner.style.opacity = String(1 - eased * 0.7)
+      inner.style.transform = `translate3d(0, ${eased * -6}%, 0) scale(${1 - eased * 0.06})`
+
+      frame = current === target ? 0 : requestAnimationFrame(render)
     }
 
     const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(update)
+      measure()
+      if (!prefersReducedMotion && !frame) frame = requestAnimationFrame(render)
     }
 
-    update()
+    measure()
+    current = target
+    if (!prefersReducedMotion) render()
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', onScroll)
 
