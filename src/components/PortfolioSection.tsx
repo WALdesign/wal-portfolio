@@ -7,6 +7,7 @@ import { IconCamera, IconReel } from '@/components/icons/PlanIcons'
 import Lightbox from '@/components/Lightbox'
 import AutoplayThumbnail from '@/components/ui/AutoplayThumbnail'
 import RevealOnScroll from '@/components/ui/RevealOnScroll'
+import RevealText from '@/components/ui/RevealText'
 import SectionLabel from '@/components/ui/SectionLabel'
 import { PORTFOLIO_CONTENT, PORTFOLIO_ITEMS } from '@/lib/data'
 import { cn, getYouTubeThumbnail } from '@/lib/utils'
@@ -40,20 +41,18 @@ export default function PortfolioSection() {
             <SectionLabel>{PORTFOLIO_CONTENT.kicker}</SectionLabel>
           </RevealOnScroll>
 
-          <RevealOnScroll delay={80}>
-            <h2
-              style={{
-                margin: '18px 0 16px',
-                fontSize: 'clamp(32px, 4.4vw, 56px)',
-                fontWeight: 800,
-                lineHeight: 1.04,
-                letterSpacing: '-0.01em',
-                color: 'var(--color-white)',
-              }}
-            >
-              {PORTFOLIO_CONTENT.title}
-            </h2>
-          </RevealOnScroll>
+          <h2
+            style={{
+              margin: '18px 0 16px',
+              fontSize: 'clamp(32px, 4.4vw, 56px)',
+              fontWeight: 800,
+              lineHeight: 1.04,
+              letterSpacing: '-0.01em',
+              color: 'var(--color-white)',
+            }}
+          >
+            <RevealText delay={80}>{PORTFOLIO_CONTENT.title}</RevealText>
+          </h2>
 
           <RevealOnScroll delay={140}>
             <p
@@ -110,7 +109,7 @@ export default function PortfolioSection() {
             item.isVideo && item.videoUrl ? getYouTubeThumbnail(item.videoUrl) : null
 
           return (
-            <RevealOnScroll key={item.id} delay={index * 60}>
+            <RevealOnScroll key={item.id} variant="mask" delay={(index % 3) * 120}>
               <button
                 type="button"
                 onClick={() => setLightboxItem(item)}

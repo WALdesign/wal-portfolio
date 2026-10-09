@@ -46,7 +46,7 @@ export default function Footer() {
 
   return (
     <footer
-      className="relative"
+      className="wal-footer-reveal relative"
       style={{
         overflow: 'hidden',
         background: 'linear-gradient(to bottom, transparent 0px, var(--color-surface-2) 40px)',

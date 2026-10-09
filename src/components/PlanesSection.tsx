@@ -1,20 +1,66 @@
 'use client'
 
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, type CSSProperties } from 'react'
 
 import { IconImage, PlanIcon } from '@/components/icons/PlanIcons'
 import Button from '@/components/ui/Button'
+import CountUp from '@/components/ui/CountUp'
 import RevealOnScroll from '@/components/ui/RevealOnScroll'
+import RevealText from '@/components/ui/RevealText'
 import SectionLabel from '@/components/ui/SectionLabel'
 import { PLANES_CONTENT, PLANS, SITE_CONFIG } from '@/lib/data'
+import { cn } from '@/lib/utils'
+import { useInView } from '@/lib/useInView'
+import type { Plan } from '@/types'
+
+function FeatureList({ features }: { features: Plan['features'] }) {
+  const { ref, isVisible } = useInView<HTMLUListElement>()
+
+  return (
+    <ul
+      ref={ref}
+      className={cn('wal-features', isVisible && 'is-visible')}
+      style={{ listStyle: 'none', margin: 0, padding: 0 }}
+    >
+      {features.map((feature, index) => (
+        <li
+          key={feature.text}
+          className="wal-feature flex items-center"
+          style={
+            {
+              gap: '14px',
+              padding: '10px 0',
+              '--feature-delay': `${index * 110}ms`,
+            } as CSSProperties
+          }
+        >
+          <PlanIcon name={feature.icon} width={22} height={22} />
+          <span style={{ color: 'var(--color-white)', fontSize: '15px', fontWeight: 500 }}>
+            {feature.text}
+          </span>
+        </li>
+      ))}
+    </ul>
+  )
+}
 
 export default function PlanesSection() {
   const [activeKey, setActiveKey] = useState(PLANS[0].key)
+  const [direction, setDirection] = useState<'next' | 'prev'>('next')
   const [failedImages, setFailedImages] = useState<Record<string, boolean>>({})
 
   const activePlan = PLANS.find((plan) => plan.key === activeKey) ?? PLANS[0]
   const imageFailed = failedImages[activePlan.key]
+  const slideClass = direction === 'next' ? 'wal-slide-next' : 'wal-slide-prev'
+
+  const selectPlan = (key: Plan['key']) => {
+    if (key === activeKey) return
+    const from = PLANS.findIndex((plan) => plan.key === activeKey)
+    const to = PLANS.findIndex((plan) => plan.key === key)
+    setDirection(to > from ? 'next' : 'prev')
+    setActiveKey(key)
+  }
 
   return (
     <section id="planes" style={{ padding: 'var(--space-section-y) 0' }}>
@@ -23,20 +69,18 @@ export default function PlanesSection() {
           <SectionLabel>{PLANES_CONTENT.kicker}</SectionLabel>
         </RevealOnScroll>
 
-        <RevealOnScroll delay={80}>
-          <h2
-            style={{
-              margin: '18px 0 16px',
-              fontSize: 'clamp(32px, 4.4vw, 56px)',
-              fontWeight: 800,
-              lineHeight: 1.04,
-              letterSpacing: '-0.01em',
-              color: 'var(--color-white)',
-            }}
-          >
-            {PLANES_CONTENT.title}
-          </h2>
-        </RevealOnScroll>
+        <h2
+          style={{
+            margin: '18px 0 16px',
+            fontSize: 'clamp(32px, 4.4vw, 56px)',
+            fontWeight: 800,
+            lineHeight: 1.04,
+            letterSpacing: '-0.01em',
+            color: 'var(--color-white)',
+          }}
+        >
+          <RevealText delay={80}>{PLANES_CONTENT.title}</RevealText>
+        </h2>
 
         <RevealOnScroll delay={140}>
           <p
@@ -67,7 +111,7 @@ export default function PlanesSection() {
               <button
                 key={plan.key}
                 type="button"
-                onClick={() => setActiveKey(plan.key)}
+                onClick={() => selectPlan(plan.key)}
                 className="wal-service-btn"
                 style={{
                   background: 'none',
@@ -96,7 +140,7 @@ export default function PlanesSection() {
         style={{ padding: '40px var(--space-page-x) 0', gap: '48px' }}
       >
         <RevealOnScroll delay={100} className="h-full">
-          <div className="flex h-full flex-col">
+          <div key={activePlan.key} className={cn('flex h-full flex-col', slideClass)}>
             <div
               className="relative"
               style={{
@@ -167,7 +211,11 @@ export default function PlanesSection() {
         </RevealOnScroll>
 
         <RevealOnScroll delay={160} className="h-full">
-          <div className="flex h-full flex-col justify-between">
+          <div
+            key={activePlan.key}
+            className={cn('flex h-full flex-col justify-between', slideClass)}
+            style={{ animationDelay: '60ms' }}
+          >
             <div>
               <h3
                 style={{
@@ -227,26 +275,7 @@ export default function PlanesSection() {
                 {activePlan.quote}
               </blockquote>
 
-              <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                {activePlan.features.map((feature) => (
-                  <li
-                    key={feature.text}
-                    className="flex items-center"
-                    style={{ gap: '14px', padding: '10px 0' }}
-                  >
-                    <PlanIcon name={feature.icon} width={22} height={22} />
-                    <span
-                      style={{
-                        color: 'var(--color-white)',
-                        fontSize: '15px',
-                        fontWeight: 500,
-                      }}
-                    >
-                      {feature.text}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+              <FeatureList features={activePlan.features} />
             </div>
 
             <div className="flex" style={{ justifyContent: 'flex-end', marginTop: '32px' }}>
@@ -270,7 +299,7 @@ export default function PlanesSection() {
                     lineHeight: 1,
                   }}
                 >
-                  ${activePlan.priceNum}
+                  <CountUp value={Number(activePlan.priceNum)} prefix="$" />
                 </p>
                 <Button
                   href={SITE_CONFIG.whatsapp}

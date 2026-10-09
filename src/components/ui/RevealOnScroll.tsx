@@ -8,9 +8,15 @@ interface RevealOnScrollProps {
   children: ReactNode
   delay?: number
   className?: string
+  variant?: 'fade' | 'mask'
 }
 
-export default function RevealOnScroll({ children, delay = 0, className }: RevealOnScrollProps) {
+export default function RevealOnScroll({
+  children,
+  delay = 0,
+  className,
+  variant = 'fade',
+}: RevealOnScrollProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [isVisible, setIsVisible] = useState(false)
 
@@ -43,7 +49,11 @@ export default function RevealOnScroll({ children, delay = 0, className }: Revea
   return (
     <div
       ref={ref}
-      className={cn('reveal-on-scroll', isVisible && 'is-visible', className)}
+      className={cn(
+        variant === 'mask' ? 'reveal-mask' : 'reveal-on-scroll',
+        isVisible && 'is-visible',
+        className
+      )}
       style={{ transitionDelay: delay ? `${delay}ms` : undefined }}
     >
       {children}

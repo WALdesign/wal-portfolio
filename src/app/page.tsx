@@ -10,18 +10,18 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <main>
+      <main style={{ position: 'relative', zIndex: 1 }}>
         <CurtainHero>
           <HeroSection />
         </CurtainHero>
 
-        {/* Cortina: sube sobre el Hero al hacer scroll */}
+        {/* Cortina: sube sobre el Hero y, al final, se levanta para revelar el footer */}
         <div
           style={{
             position: 'relative',
             zIndex: 1,
             backgroundColor: 'var(--color-bg)',
-            clipPath: 'inset(0 round clamp(20px, 3vw, 40px) clamp(20px, 3vw, 40px) 0 0)',
+            clipPath: 'inset(0 round clamp(20px, 3vw, 40px))',
           }}
         >
           <div aria-hidden="true" style={{ position: 'fixed', inset: 0, pointerEvents: 'none' }}>
