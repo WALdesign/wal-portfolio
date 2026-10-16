@@ -291,6 +291,44 @@ body {
   }
 }
 
+/* Botones: al pasar el cursor se elevan y ganan un brillo rojo sutil */
+.wal-button,
+button {
+  transition:
+    transform 0.3s var(--ease-out-expo),
+    box-shadow 0.3s var(--ease-out-expo),
+    background-color 0.25s var(--ease-in-out),
+    border-color 0.25s var(--ease-in-out),
+    color 0.25s var(--ease-in-out),
+    opacity 0.25s var(--ease-in-out);
+}
+
+.wal-button:hover,
+.wal-button:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px -10px var(--color-red-glow);
+}
+
+.wal-button:active {
+  transform: translateY(0) scale(0.98);
+  transition-duration: 0.12s;
+}
+
+.wal-button[style*='var(--color-red)']:hover,
+.wal-button[style*='var(--color-red)']:focus-visible {
+  box-shadow: 0 12px 32px -8px var(--color-red-glow);
+}
+
+.wal-button:not([style*='var(--color-red)']):hover {
+  border-color: var(--color-red);
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--color-red);
+  outline-offset: 3px;
+}
+
 .wal-service-btn {
   transform: scale(1);
   transition: transform 0.25s var(--ease-out-expo);
