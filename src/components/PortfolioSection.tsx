@@ -9,7 +9,8 @@ import AutoplayThumbnail from '@/components/ui/AutoplayThumbnail'
 import RevealOnScroll from '@/components/ui/RevealOnScroll'
 import RevealText from '@/components/ui/RevealText'
 import SectionLabel from '@/components/ui/SectionLabel'
-import { PORTFOLIO_CONTENT, PORTFOLIO_ITEMS } from '@/lib/data'
+import { useAudience } from '@/lib/AudienceContext'
+import { AUDIENCE_OPTIONS, PORTFOLIO_CONTENT, PORTFOLIO_ITEMS } from '@/lib/data'
 import { cn, getYouTubeThumbnail } from '@/lib/utils'
 import type { PortfolioFilter, PortfolioItem } from '@/types'
 
@@ -24,11 +25,17 @@ export default function PortfolioSection() {
   const [lightboxItem, setLightboxItem] = useState<PortfolioItem | null>(null)
   const [failedImages, setFailedImages] = useState<Record<string, boolean>>({})
 
+  const { audience, openGate } = useAudience()
+  const audienceLabel = AUDIENCE_OPTIONS.find((o) => o.key === audience)?.label
+
   const filteredItems = useMemo(() => {
-    if (activeFilter === 'todo') return PORTFOLIO_ITEMS
-    if (activeFilter === 'video') return PORTFOLIO_ITEMS.filter((item) => item.isVideo)
-    return PORTFOLIO_ITEMS.filter((item) => !item.isVideo)
-  }, [activeFilter])
+    const byAudience = audience
+      ? PORTFOLIO_ITEMS.filter((item) => item.audience === audience)
+      : PORTFOLIO_ITEMS
+    if (activeFilter === 'todo') return byAudience
+    if (activeFilter === 'video') return byAudience.filter((item) => item.isVideo)
+    return byAudience.filter((item) => !item.isVideo)
+  }, [activeFilter, audience])
 
   return (
     <section id="portafolio" style={{ padding: 'var(--space-section-y) 0' }}>
@@ -66,6 +73,30 @@ export default function PortfolioSection() {
               {PORTFOLIO_CONTENT.description}
             </p>
           </RevealOnScroll>
+
+          {audienceLabel && (
+            <p style={{ margin: '16px 0 0', fontSize: '14px', color: 'var(--color-muted)' }}>
+              Categoría: <strong style={{ color: 'var(--color-white)' }}>{audienceLabel}</strong>
+              {' · '}
+              <button
+                type="button"
+                onClick={openGate}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  cursor: 'pointer',
+                  color: 'var(--color-red)',
+                  fontFamily: 'var(--font-primary)',
+                  fontSize: '14px',
+                  textDecoration: 'underline',
+                  textUnderlineOffset: '3px',
+                }}
+              >
+                Cambiar
+              </button>
+            </p>
+          )}
         </div>
 
         <RevealOnScroll delay={140}>
@@ -98,6 +129,12 @@ export default function PortfolioSection() {
           </div>
         </RevealOnScroll>
       </div>
+
+      {filteredItems.length === 0 && (
+        <p style={{ padding: '0 var(--space-page-x)', color: 'var(--color-muted)' }}>
+          Aún no hay trabajos de este tipo con ese formato. Prueba con «Todo».
+        </p>
+      )}
 
       <div
         className="grid md:grid-cols-3"

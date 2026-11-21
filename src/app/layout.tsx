@@ -1,12 +1,14 @@
 import type { Metadata } from 'next'
 import { Poppins } from 'next/font/google'
 
+import CategoryGate from '@/components/CategoryGate'
 import HeroGrid from '@/components/HeroGrid'
+import { AudienceProvider } from '@/lib/AudienceContext'
 
 import './globals.css'
 
 const poppins = Poppins({
-  weight: ['400', '500', '600', '700', '800', '900'],
+  weight: ['200', '300', '400', '500', '600', '700', '800', '900'],
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-poppins',
@@ -77,7 +79,10 @@ export default function RootLayout({
         >
           <HeroGrid opacity={0.03} showGuides={false} strokeColor="var(--color-white)" />
         </div>
-        <div style={{ position: 'relative', zIndex: 1 }}>{children}</div>
+        <AudienceProvider>
+          <CategoryGate />
+          <div style={{ position: 'relative', zIndex: 1 }}>{children}</div>
+        </AudienceProvider>
       </body>
     </html>
   )

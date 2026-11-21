@@ -403,3 +403,222 @@ a:focus-visible {
     stroke-dashoffset: 0;
   }
 }
+
+/* ==========================================================================
+   Menú de categorías (entrada)
+   ========================================================================== */
+
+@keyframes wal-gate-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes wal-gate-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.wal-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background-color: #000;
+  color: var(--color-white);
+  overflow-y: auto;
+  animation: wal-gate-in 0.8s var(--ease-out-expo);
+}
+
+.wal-gate__fade {
+  opacity: 0;
+  animation: wal-gate-up 1s var(--ease-out-expo) forwards;
+}
+
+.wal-gate__inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: clamp(24px, 3.5vw, 44px) var(--space-page-x);
+}
+
+.wal-gate__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.wal-gate__skip {
+  background: none;
+  border: none;
+  padding: 4px 0;
+  cursor: pointer;
+  color: var(--color-muted);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  transition: var(--transition-base);
+}
+
+.wal-gate__skip:hover,
+.wal-gate__skip:focus-visible {
+  color: var(--color-white);
+  border-color: var(--color-white);
+  outline: none;
+}
+
+.wal-gate__body {
+  flex: 1;
+  display: grid;
+  align-content: end;
+  gap: clamp(40px, 6vh, 72px);
+  padding-top: 48px;
+}
+
+@media (min-width: 1024px) {
+  .wal-gate__body {
+    grid-template-columns: 1.1fr 1fr;
+    align-items: end;
+    gap: clamp(48px, 7vw, 120px);
+  }
+}
+
+.wal-gate__kicker {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.wal-gate__line {
+  width: 36px;
+  height: 1px;
+  background: var(--color-red);
+}
+
+.wal-gate__title {
+  font-size: clamp(56px, 11vw, 168px);
+  font-weight: 200;
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+}
+
+.wal-gate__lead {
+  max-width: 440px;
+  margin-top: 26px;
+  font-size: clamp(15px, 1.15vw, 17px);
+  font-weight: 300;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.wal-gate__label {
+  margin-bottom: 10px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.wal-gate__option {
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 2vw, 28px);
+  width: 100%;
+  padding: clamp(14px, 2.1vh, 20px) 0;
+  background: none;
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--color-white);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    padding 0.45s var(--ease-out-expo),
+    border-color 0.3s;
+}
+
+.wal-gate__option:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.wal-gate__num {
+  width: 22px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-muted-2);
+  transition: color 0.3s;
+}
+
+.wal-gate__text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.wal-gate__name {
+  font-size: clamp(20px, 2vw, 28px);
+  font-weight: 300;
+  letter-spacing: -0.015em;
+}
+
+.wal-gate__hint {
+  font-size: 12.5px;
+  font-weight: 300;
+  color: var(--color-muted-2);
+}
+
+.wal-gate__arrow {
+  font-size: 20px;
+  font-weight: 200;
+  opacity: 0.35;
+  transform: translateX(-8px);
+  transition:
+    opacity 0.3s,
+    transform 0.45s var(--ease-out-expo),
+    color 0.3s;
+}
+
+.wal-gate__option:hover,
+.wal-gate__option:focus-visible {
+  padding-left: 12px;
+  border-top-color: rgba(255, 255, 255, 0.4);
+  outline: none;
+}
+
+.wal-gate__option:hover .wal-gate__num,
+.wal-gate__option:focus-visible .wal-gate__num,
+.wal-gate__option:hover .wal-gate__arrow,
+.wal-gate__option:focus-visible .wal-gate__arrow {
+  color: var(--color-red);
+}
+
+.wal-gate__option:hover .wal-gate__arrow,
+.wal-gate__option:focus-visible .wal-gate__arrow {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wal-gate,
+  .wal-gate__fade {
+    animation: none;
+    opacity: 1;
+  }
+}

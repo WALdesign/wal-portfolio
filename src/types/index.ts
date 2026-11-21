@@ -1,11 +1,26 @@
 export type PortfolioCategory = 'todo' | 'foto' | 'video' | 'identidad' | 'campaña'
 
+export type AudienceCategory =
+  | 'marca-personal'
+  | 'gastronomia'
+  | 'hospedaje'
+  | 'producto'
+  | 'evento'
+
+export interface AudienceOption {
+  key: AudienceCategory
+  n: string
+  label: string
+  hint: string
+}
+
 export interface PortfolioItem {
   id: string
   n: string // número display ej: "01"
   title: string
   tag: string // categoría display ej: "Fotografía editorial"
   category: PortfolioCategory
+  audience: AudienceCategory
   isVideo: boolean
   imageSrc: string
   imageAlt: string
