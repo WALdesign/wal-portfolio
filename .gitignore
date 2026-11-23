@@ -34,3 +34,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Archivos originales (sin optimizar) de fotos y videos del portafolio
+/videos-para-web/

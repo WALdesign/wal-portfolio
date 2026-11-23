@@ -1,57 +1,50 @@
 'use client'
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 
 import type { AudienceCategory } from '@/types'
-
-const STORAGE_KEY = 'wal-audience'
 
 interface AudienceContextValue {
   audience: AudienceCategory | null
   gateOpen: boolean
+  /** Elección desde el menú de bienvenida: cierra el menú y lleva al portafolio. */
   choose: (value: AudienceCategory | null) => void
+  /** Cambio de categoría desde el propio portafolio (sin abrir el menú). */
+  setAudience: (value: AudienceCategory | null) => void
+  /** Cierra el menú y lleva directo a los planes. */
+  goToPlans: () => void
   openGate: () => void
 }
 
 const AudienceContext = createContext<AudienceContextValue | null>(null)
 
+function scrollTo(id: string) {
+  requestAnimationFrame(() =>
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  )
+}
+
 export function AudienceProvider({ children }: { children: React.ReactNode }) {
   const [audience, setAudience] = useState<AudienceCategory | null>(null)
-  // Abierto por defecto: el menú aparece desde que el usuario entra.
+  // Siempre abierto al cargar: en cada visita o recarga aparece la bienvenida.
   const [gateOpen, setGateOpen] = useState(true)
-
-  // Si ya eligió en esta sesión, no se le vuelve a mostrar el menú.
-  useEffect(() => {
-    try {
-      const saved = sessionStorage.getItem(STORAGE_KEY) as AudienceCategory | 'todo' | null
-      if (saved) {
-        setAudience(saved === 'todo' ? null : saved)
-        setGateOpen(false)
-      }
-    } catch {
-      /* sessionStorage no disponible */
-    }
-  }, [])
 
   const choose = useCallback((value: AudienceCategory | null) => {
     setAudience(value)
     setGateOpen(false)
-    try {
-      sessionStorage.setItem(STORAGE_KEY, value ?? 'todo')
-    } catch {
-      /* noop */
-    }
-    // Lleva al contenido elegido
-    requestAnimationFrame(() =>
-      document.getElementById('portafolio')?.scrollIntoView({ behavior: 'smooth' })
-    )
+    scrollTo('portafolio')
+  }, [])
+
+  const goToPlans = useCallback(() => {
+    setGateOpen(false)
+    scrollTo('planes')
   }, [])
 
   const openGate = useCallback(() => setGateOpen(true), [])
 
   const value = useMemo(
-    () => ({ audience, gateOpen, choose, openGate }),
-    [audience, gateOpen, choose, openGate]
+    () => ({ audience, gateOpen, choose, setAudience, goToPlans, openGate }),
+    [audience, gateOpen, choose, goToPlans, openGate]
   )
 
   return <AudienceContext.Provider value={value}>{children}</AudienceContext.Provider>

@@ -1,18 +1,27 @@
 'use client'
 
 import Image from 'next/image'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { IconCamera, IconReel } from '@/components/icons/PlanIcons'
 import Lightbox from '@/components/Lightbox'
 import AutoplayThumbnail from '@/components/ui/AutoplayThumbnail'
 import RevealOnScroll from '@/components/ui/RevealOnScroll'
 import RevealText from '@/components/ui/RevealText'
+import VideoPreview from '@/components/ui/VideoPreview'
 import SectionLabel from '@/components/ui/SectionLabel'
 import { useAudience } from '@/lib/AudienceContext'
 import { AUDIENCE_OPTIONS, PORTFOLIO_CONTENT, PORTFOLIO_ITEMS } from '@/lib/data'
 import { cn, getYouTubeThumbnail } from '@/lib/utils'
-import type { PortfolioFilter, PortfolioItem } from '@/types'
+import type { AudienceCategory, PortfolioFilter, PortfolioItem } from '@/types'
+
+// Trabajos que se muestran por tanda (2 filas en escritorio) para no alargar la página.
+const PAGE_SIZE = 6
+
+const COUNT_BY_AUDIENCE = PORTFOLIO_ITEMS.reduce<Record<string, number>>((acc, item) => {
+  acc[item.audience] = (acc[item.audience] ?? 0) + 1
+  return acc
+}, {})
 
 const ASPECT_RATIO: Record<NonNullable<PortfolioItem['aspectRatio']>, string> = {
   square: '1 / 1',
@@ -25,8 +34,9 @@ export default function PortfolioSection() {
   const [lightboxItem, setLightboxItem] = useState<PortfolioItem | null>(null)
   const [failedImages, setFailedImages] = useState<Record<string, boolean>>({})
 
-  const { audience, openGate } = useAudience()
+  const { audience, setAudience } = useAudience()
   const audienceLabel = AUDIENCE_OPTIONS.find((o) => o.key === audience)?.label
+  const [visible, setVisible] = useState(PAGE_SIZE)
 
   const filteredItems = useMemo(() => {
     const byAudience = audience
@@ -37,11 +47,22 @@ export default function PortfolioSection() {
     return byAudience.filter((item) => !item.isVideo)
   }, [activeFilter, audience])
 
+  // Al cambiar de categoría o formato se vuelve a mostrar solo la primera tanda.
+  useEffect(() => setVisible(PAGE_SIZE), [activeFilter, audience])
+
+  const visibleItems = filteredItems.slice(0, visible)
+  const remaining = filteredItems.length - visibleItems.length
+
+  const showLess = () => {
+    setVisible(PAGE_SIZE)
+    document.getElementById('portafolio')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   return (
     <section id="portafolio" style={{ padding: 'var(--space-section-y) 0' }}>
       <div
         className="flex flex-wrap items-end justify-between"
-        style={{ padding: '0 var(--space-page-x)', gap: '24px', marginBottom: '48px' }}
+        style={{ padding: '0 var(--space-page-x)', gap: '24px', marginBottom: '32px' }}
       >
         <div style={{ maxWidth: '640px' }}>
           <RevealOnScroll>
@@ -58,7 +79,7 @@ export default function PortfolioSection() {
               color: 'var(--color-white)',
             }}
           >
-            <RevealText delay={80}>{PORTFOLIO_CONTENT.title}</RevealText>
+            <RevealText delay={80}>{audienceLabel ?? PORTFOLIO_CONTENT.title}</RevealText>
           </h2>
 
           <RevealOnScroll delay={140}>
@@ -70,65 +91,51 @@ export default function PortfolioSection() {
                 color: 'var(--color-muted)',
               }}
             >
-              {PORTFOLIO_CONTENT.description}
+              {audienceLabel
+                ? `Trabajos de ${audienceLabel.toLowerCase()} seleccionados para ti.`
+                : PORTFOLIO_CONTENT.description}
             </p>
           </RevealOnScroll>
-
-          {audienceLabel && (
-            <p style={{ margin: '16px 0 0', fontSize: '14px', color: 'var(--color-muted)' }}>
-              Categoría: <strong style={{ color: 'var(--color-white)' }}>{audienceLabel}</strong>
-              {' · '}
-              <button
-                type="button"
-                onClick={openGate}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  padding: 0,
-                  cursor: 'pointer',
-                  color: 'var(--color-red)',
-                  fontFamily: 'var(--font-primary)',
-                  fontSize: '14px',
-                  textDecoration: 'underline',
-                  textUnderlineOffset: '3px',
-                }}
-              >
-                Cambiar
-              </button>
-            </p>
-          )}
         </div>
+      </div>
 
-        <RevealOnScroll delay={140}>
-          <div className="flex" style={{ gap: '28px' }}>
-            {PORTFOLIO_CONTENT.filters.map((filter) => {
-              const isActive = filter.key === activeFilter
+      <RevealOnScroll delay={160}>
+        <div className="wal-portfolio-toolbar" style={{ padding: '0 var(--space-page-x)' }}>
+          <div role="group" aria-label="Categoría" className="wal-cat-chips">
+            {[{ key: null, label: 'Todo' }, ...AUDIENCE_OPTIONS].map((opt) => {
+              const isActive = opt.key === audience
+              const count = opt.key ? (COUNT_BY_AUDIENCE[opt.key] ?? 0) : PORTFOLIO_ITEMS.length
 
               return (
                 <button
-                  key={filter.key}
+                  key={opt.key ?? 'todo'}
                   type="button"
-                  onClick={() => setActiveFilter(filter.key)}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    padding: '0 0 8px',
-                    fontFamily: 'var(--font-primary)',
-                    fontSize: '18px',
-                    fontWeight: 700,
-                    color: isActive ? 'var(--color-white)' : 'var(--color-muted)',
-                    borderBottom: isActive ? '2px solid var(--color-red)' : '2px solid transparent',
-                    transition: 'var(--transition-base)',
-                  }}
+                  aria-pressed={isActive}
+                  onClick={() => setAudience(opt.key as AudienceCategory | null)}
+                  className={cn('wal-cat-chip', isActive && 'is-active')}
                 >
-                  {filter.label}
+                  {opt.label}
+                  <span className="wal-cat-chip__count">{count}</span>
                 </button>
               )
             })}
           </div>
-        </RevealOnScroll>
-      </div>
+
+          <div role="group" aria-label="Formato" className="wal-format-switch">
+            {PORTFOLIO_CONTENT.filters.map((filter) => (
+              <button
+                key={filter.key}
+                type="button"
+                aria-pressed={filter.key === activeFilter}
+                onClick={() => setActiveFilter(filter.key)}
+                className={cn('wal-format-switch__btn', filter.key === activeFilter && 'is-active')}
+              >
+                {filter.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </RevealOnScroll>
 
       {filteredItems.length === 0 && (
         <p style={{ padding: '0 var(--space-page-x)', color: 'var(--color-muted)' }}>
@@ -140,7 +147,7 @@ export default function PortfolioSection() {
         className="grid md:grid-cols-3"
         style={{ padding: '0 var(--space-page-x)', gap: '20px' }}
       >
-        {filteredItems.map((item, index) => {
+        {visibleItems.map((item, index) => {
           const imageFailed = failedImages[item.id]
           const youtubeThumbnail =
             item.isVideo && item.videoUrl ? getYouTubeThumbnail(item.videoUrl) : null
@@ -161,7 +168,14 @@ export default function PortfolioSection() {
                   overflow: 'hidden',
                 }}
               >
-                {youtubeThumbnail ? (
+                {item.previewSrc ? (
+                  <VideoPreview
+                    previewSrc={item.previewSrc}
+                    posterSrc={item.imageSrc}
+                    alt={item.imageAlt}
+                    className="group-hover:scale-105"
+                  />
+                ) : youtubeThumbnail ? (
                   <AutoplayThumbnail
                     videoUrl={item.videoUrl ?? ''}
                     thumbnailSrc={youtubeThumbnail}
@@ -203,7 +217,7 @@ export default function PortfolioSection() {
                   />
                 )}
 
-                {(!imageFailed || youtubeThumbnail) && (
+                {(!imageFailed || youtubeThumbnail || item.previewSrc) && (
                   <div
                     aria-hidden="true"
                     style={{
@@ -250,7 +264,7 @@ export default function PortfolioSection() {
                   )}
                 </div>
 
-                {(!imageFailed || youtubeThumbnail) && (
+                {(!imageFailed || youtubeThumbnail || item.previewSrc) && (
                   <div
                     className="opacity-0 group-hover:opacity-100"
                     style={{
@@ -288,6 +302,27 @@ export default function PortfolioSection() {
             </RevealOnScroll>
           )
         })}
+      </div>
+
+      <div className="wal-portfolio-more" style={{ padding: '0 var(--space-page-x)' }}>
+        {remaining > 0 ? (
+          <button
+            type="button"
+            className="wal-more-btn"
+            onClick={() => setVisible((v) => v + PAGE_SIZE)}
+          >
+            Ver más trabajos <span className="wal-more-btn__count">+{remaining}</span>
+          </button>
+        ) : (
+          filteredItems.length > PAGE_SIZE && (
+            <button type="button" className="wal-more-btn" onClick={showLess}>
+              Mostrar menos
+            </button>
+          )
+        )}
+        <a href="#planes" className="wal-to-plans">
+          Ir a los planes <span aria-hidden="true">↓</span>
+        </a>
       </div>
 
       <Lightbox item={lightboxItem} onClose={() => setLightboxItem(null)} />

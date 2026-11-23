@@ -622,3 +622,389 @@ a:focus-visible {
     opacity: 1;
   }
 }
+
+/* ==========================================================================
+   Planes: selector en tarjetas
+   ========================================================================== */
+
+.wal-plan-hint {
+  margin-bottom: 14px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.wal-plan-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+@media (min-width: 768px) {
+  .wal-plan-tabs {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+  }
+}
+
+.wal-plan-tab {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 2vw, 22px);
+  min-height: 100%;
+  padding: clamp(16px, 1.6vw, 22px);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-card);
+  background-color: rgba(255, 255, 255, 0.025);
+  color: var(--color-white);
+  font-family: var(--font-primary);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.3s,
+    background-color 0.3s,
+    transform 0.45s var(--ease-out-expo),
+    box-shadow 0.45s var(--ease-out-expo);
+}
+
+/* Barra roja superior que aparece en el plan activo */
+.wal-plan-tab::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: var(--color-red);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s var(--ease-out-expo);
+}
+
+.wal-plan-tab__top,
+.wal-plan-tab__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.wal-plan-tab__bottom {
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.wal-plan-tab__num {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-muted-2);
+  transition: color 0.3s;
+}
+
+/* Indicador tipo radio */
+.wal-plan-tab__check {
+  width: 16px;
+  height: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s;
+}
+
+.wal-plan-tab__name {
+  font-size: clamp(16px, 1.5vw, 21px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.wal-plan-tab__price {
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+.wal-plan-tab__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-muted);
+  transition: color 0.3s;
+}
+
+.wal-plan-tab__cta span {
+  transition: transform 0.35s var(--ease-out-expo);
+}
+
+.wal-plan-tab:hover,
+.wal-plan-tab:focus-visible {
+  border-color: rgba(255, 255, 255, 0.4);
+  background-color: rgba(255, 255, 255, 0.05);
+  transform: translateY(-3px);
+  outline: none;
+}
+
+.wal-plan-tab:hover .wal-plan-tab__cta,
+.wal-plan-tab:focus-visible .wal-plan-tab__cta {
+  color: var(--color-white);
+}
+
+.wal-plan-tab:hover .wal-plan-tab__cta span,
+.wal-plan-tab:focus-visible .wal-plan-tab__cta span {
+  transform: translateX(4px);
+}
+
+.wal-plan-tab.is-active {
+  border-color: var(--color-red);
+  background-color: var(--color-red-dim);
+  box-shadow: 0 10px 30px -14px var(--color-red-glow);
+}
+
+.wal-plan-tab.is-active::before {
+  transform: scaleX(1);
+}
+
+.wal-plan-tab.is-active .wal-plan-tab__num,
+.wal-plan-tab.is-active .wal-plan-tab__cta {
+  color: var(--color-red);
+}
+
+.wal-plan-tab.is-active .wal-plan-tab__check {
+  border-color: var(--color-red);
+  background: var(--color-red);
+  box-shadow: inset 0 0 0 3px #1a0000;
+}
+
+@media (max-width: 420px) {
+  .wal-plan-tab__cta {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Menú de bienvenida: accesos directos
+   ========================================================================== */
+
+.wal-gate__shortcuts {
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 2.5vw, 28px);
+}
+
+.wal-gate__plans {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--color-white);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.wal-gate__plans span {
+  color: var(--color-red);
+  transition: transform 0.3s var(--ease-out-expo);
+}
+
+.wal-gate__plans:hover,
+.wal-gate__plans:focus-visible {
+  border-color: var(--color-red);
+  background: var(--color-red-dim);
+  outline: none;
+}
+
+.wal-gate__plans:hover span,
+.wal-gate__plans:focus-visible span {
+  transform: translateX(3px);
+}
+
+/* ==========================================================================
+   Portafolio: categorías, formato y "ver más"
+   ========================================================================== */
+
+.wal-portfolio-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 24px;
+  margin-bottom: 32px;
+}
+
+.wal-cat-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.wal-cat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px 9px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.82);
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    border-color 0.25s,
+    background-color 0.25s,
+    color 0.25s,
+    transform 0.35s var(--ease-out-expo);
+}
+
+.wal-cat-chip__count {
+  min-width: 22px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-muted);
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  transition: inherit;
+}
+
+.wal-cat-chip:hover,
+.wal-cat-chip:focus-visible {
+  border-color: rgba(255, 255, 255, 0.5);
+  color: var(--color-white);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.wal-cat-chip.is-active {
+  border-color: var(--color-red);
+  background: var(--color-red);
+  color: var(--color-white);
+}
+
+.wal-cat-chip.is-active .wal-cat-chip__count {
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--color-white);
+}
+
+/* Formato (Todo / Video / Foto): control segmentado, distinto de las categorías */
+.wal-format-switch {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+}
+
+.wal-format-switch__btn {
+  padding: 7px 14px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--color-muted);
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.wal-format-switch__btn:hover,
+.wal-format-switch__btn:focus-visible {
+  color: var(--color-white);
+  outline: none;
+}
+
+.wal-format-switch__btn.is-active {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--color-white);
+}
+
+.wal-portfolio-more {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px 28px;
+  margin-top: 36px;
+}
+
+.wal-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 26px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  background: none;
+  color: var(--color-white);
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.wal-more-btn__count {
+  color: var(--color-red);
+}
+
+.wal-more-btn:hover,
+.wal-more-btn:focus-visible {
+  border-color: var(--color-white);
+  background: rgba(255, 255, 255, 0.06);
+  outline: none;
+}
+
+.wal-to-plans {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-muted);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: var(--transition-base);
+}
+
+.wal-to-plans span {
+  color: var(--color-red);
+}
+
+.wal-to-plans:hover,
+.wal-to-plans:focus-visible {
+  color: var(--color-white);
+  border-color: var(--color-red);
+  outline: none;
+}
+
+@media (max-width: 640px) {
+  /* En móvil las categorías se deslizan en una sola fila */
+  .wal-cat-chips {
+    flex-wrap: nowrap;
+    width: calc(100% + 2 * var(--space-page-x));
+    margin: 0 calc(-1 * var(--space-page-x));
+    padding: 2px var(--space-page-x) 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .wal-cat-chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .wal-cat-chip {
+    flex-shrink: 0;
+  }
+}

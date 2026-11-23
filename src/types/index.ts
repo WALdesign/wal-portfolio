@@ -1,11 +1,7 @@
 export type PortfolioCategory = 'todo' | 'foto' | 'video' | 'identidad' | 'campaña'
 
 export type AudienceCategory =
-  | 'marca-personal'
-  | 'gastronomia'
-  | 'hospedaje'
-  | 'producto'
-  | 'evento'
+  'marca-personal' | 'gastronomia' | 'hospedaje' | 'producto' | 'evento' | 'diseno-grafico'
 
 export interface AudienceOption {
   key: AudienceCategory
@@ -24,7 +20,8 @@ export interface PortfolioItem {
   isVideo: boolean
   imageSrc: string
   imageAlt: string
-  videoUrl?: string // URL de YouTube o Vimeo si es video
+  videoUrl?: string // URL de YouTube/Vimeo o archivo .mp4 propio
+  previewSrc?: string // clip corto sin audio que se reproduce en la tarjeta
   aspectRatio?: 'square' | 'portrait' | 'landscape'
 }
 

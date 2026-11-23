@@ -97,47 +97,46 @@ export default function PlanesSection() {
       </div>
 
       <RevealOnScroll delay={180}>
-        <div
-          className="grid grid-cols-2 md:grid-cols-4"
-          style={{
-            padding: '0 var(--space-page-x)',
-            borderBottom: '1px solid var(--color-border)',
-          }}
-        >
-          {PLANS.map((plan) => {
-            const isActive = plan.key === activeKey
+        <div style={{ padding: '0 var(--space-page-x)' }}>
+          <p className="wal-plan-hint">Selecciona un plan para ver qué incluye</p>
+          <div role="tablist" aria-label="Planes" className="wal-plan-tabs">
+            {PLANS.map((plan) => {
+              const isActive = plan.key === activeKey
 
-            return (
-              <button
-                key={plan.key}
-                type="button"
-                onClick={() => selectPlan(plan.key)}
-                className="wal-service-btn"
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  borderBottom: isActive ? '3px solid var(--color-red)' : '3px solid transparent',
-                  cursor: 'pointer',
-                  padding: '0 4px 16px',
-                  marginBottom: '-1px',
-                  textAlign: 'left',
-                  fontFamily: 'var(--font-primary)',
-                  fontSize: 'clamp(14px, 1.3vw, 18px)',
-                  fontWeight: 700,
-                  color: isActive ? 'var(--color-white)' : 'var(--color-muted)',
-                  transition: 'var(--transition-base)',
-                }}
-              >
-                {plan.nav}
-              </button>
-            )
-          })}
+              return (
+                <button
+                  key={plan.key}
+                  type="button"
+                  role="tab"
+                  aria-selected={isActive}
+                  aria-controls="plan-detalle"
+                  onClick={() => selectPlan(plan.key)}
+                  className={cn('wal-plan-tab', isActive && 'is-active')}
+                >
+                  <span className="wal-plan-tab__top">
+                    <span className="wal-plan-tab__num">{plan.num}</span>
+                    <span className="wal-plan-tab__check" aria-hidden="true" />
+                  </span>
+                  <span className="wal-plan-tab__name">{plan.title}</span>
+                  <span className="wal-plan-tab__bottom">
+                    <span className="wal-plan-tab__price">Desde ${plan.priceNum}</span>
+                    <span className="wal-plan-tab__cta">
+                      {isActive ? 'Viendo' : 'Ver plan'}
+                      <span aria-hidden="true">→</span>
+                    </span>
+                  </span>
+                </button>
+              )
+            })}
+          </div>
         </div>
       </RevealOnScroll>
 
       <div
+        id="plan-detalle"
+        role="tabpanel"
         className="grid md:grid-cols-2"
-        style={{ padding: '40px var(--space-page-x) 0', gap: '48px' }}
+        style={{ padding: '48px var(--space-page-x) 0', gap: '48px' }}
       >
         <RevealOnScroll delay={100} className="h-full">
           <div key={activePlan.key} className={cn('flex h-full flex-col', slideClass)}>

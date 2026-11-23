@@ -8,7 +8,7 @@ import { AUDIENCE_OPTIONS } from '@/lib/data'
 import { useAudience } from '@/lib/AudienceContext'
 
 export default function CategoryGate() {
-  const { gateOpen, choose } = useAudience()
+  const { gateOpen, choose, goToPlans } = useAudience()
   const firstButton = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
@@ -35,9 +35,14 @@ export default function CategoryGate() {
       <div className="wal-gate__inner">
         <header className="wal-gate__top wal-gate__fade" style={{ animationDelay: '0.1s' }}>
           <Logo style={{ fontWeight: 800, fontSize: '20px', letterSpacing: '-0.01em' }} />
-          <button type="button" className="wal-gate__skip" onClick={() => choose(null)}>
-            Ver todo el portafolio
-          </button>
+          <div className="wal-gate__shortcuts">
+            <button type="button" className="wal-gate__skip" onClick={() => choose(null)}>
+              Ver todo
+            </button>
+            <button type="button" className="wal-gate__plans" onClick={goToPlans}>
+              Ver planes <span aria-hidden="true">→</span>
+            </button>
+          </div>
         </header>
 
         <div className="wal-gate__body">

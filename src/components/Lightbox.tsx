@@ -56,10 +56,12 @@ function VideoPlayer({
   videoUrl,
   title,
   orientation,
+  poster,
 }: {
   videoUrl: string
   title: string
   orientation: VideoOrientation
+  poster?: string
 }) {
   const isYouTube = /youtube\.com|youtu\.be/.test(videoUrl)
   const isVimeo = /vimeo\.com/.test(videoUrl)
@@ -95,6 +97,7 @@ function VideoPlayer({
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
         <video
           src={videoUrl}
+          poster={poster}
           controls
           autoPlay
           playsInline
@@ -143,6 +146,7 @@ export default function Lightbox({ item, onClose }: LightboxProps) {
               videoUrl={item.videoUrl}
               title={item.title}
               orientation={item.aspectRatio ?? 'landscape'}
+              poster={item.imageSrc}
             />
           ) : (
             <p style={{ color: 'var(--color-muted)', fontFamily: 'var(--font-primary)' }}>
