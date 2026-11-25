@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, type CSSProperties } from 'react'
+import { useEffect, useRef, type CSSProperties } from 'react'
+import { createPortal } from 'react-dom'
 
 import { getVimeoEmbedUrl, getYouTubeEmbedUrl } from '@/lib/utils'
 import type { PortfolioItem } from '@/types'
@@ -17,19 +18,28 @@ const overlayStyle: CSSProperties = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  padding: 'var(--space-page-x)',
+  padding: '72px var(--space-page-x) 24px', // deja espacio arriba para el botón Cerrar
   backgroundColor: 'rgba(0, 0, 0, 0.92)',
 }
 
+// Botón de cierre grande y visible (mínimo 44px para tocarlo bien en el celular).
 const closeButtonStyle: CSSProperties = {
-  position: 'absolute',
-  top: '24px',
-  right: '24px',
-  background: 'none',
-  border: 'none',
+  position: 'fixed',
+  top: '16px',
+  right: '16px',
+  zIndex: 1,
+  display: 'flex',
+  alignItems: 'center',
+  gap: '8px',
+  minHeight: '44px',
+  padding: '0 16px',
+  borderRadius: '999px',
+  border: '1px solid var(--color-border)',
+  backgroundColor: 'rgba(20, 20, 20, 0.85)',
   color: 'var(--color-white)',
-  fontSize: '32px',
-  lineHeight: 1,
+  fontFamily: 'var(--font-primary)',
+  fontSize: '14px',
+  fontWeight: 600,
   cursor: 'pointer',
 }
 
@@ -115,8 +125,12 @@ function VideoPlayer({
 }
 
 export default function Lightbox({ item, onClose }: LightboxProps) {
+  const closeRef = useRef<HTMLButtonElement>(null)
+
   useEffect(() => {
     if (!item) return
+
+    const previouslyFocused = document.activeElement as HTMLElement | null
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') onClose()
@@ -124,19 +138,36 @@ export default function Lightbox({ item, onClose }: LightboxProps) {
 
     document.addEventListener('keydown', handleKeyDown)
     document.body.style.overflow = 'hidden'
+    closeRef.current?.focus({ preventScroll: true })
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
       document.body.style.overflow = ''
+      // Devuelve el foco a la tarjeta que se abrió.
+      previouslyFocused?.focus({ preventScroll: true })
     }
   }, [item, onClose])
 
   if (!item) return null
 
-  return (
-    <div style={overlayStyle} onClick={onClose} role="dialog" aria-modal="true">
-      <button type="button" style={closeButtonStyle} onClick={onClose} aria-label="Cerrar">
-        ×
+  // Se monta directamente en <body>: así el overlay no queda recortado por el
+  // clip-path de la cortina ni tapado por la barra de navegación (z-index 80).
+  return createPortal(
+    <div style={overlayStyle} onClick={onClose} role="dialog" aria-modal="true" aria-label={item.title}>
+      <button
+        ref={closeRef}
+        type="button"
+        style={closeButtonStyle}
+        onClick={(event) => {
+          event.stopPropagation()
+          onClose()
+        }}
+        aria-label="Cerrar"
+      >
+        <span aria-hidden="true" style={{ fontSize: '20px', lineHeight: 1 }}>
+          ×
+        </span>
+        Cerrar
       </button>
 
       <div onClick={(event) => event.stopPropagation()}>
@@ -162,6 +193,7 @@ export default function Lightbox({ item, onClose }: LightboxProps) {
           />
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
