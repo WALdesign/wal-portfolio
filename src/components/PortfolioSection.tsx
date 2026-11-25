@@ -12,7 +12,7 @@ import VideoPreview from '@/components/ui/VideoPreview'
 import SectionLabel from '@/components/ui/SectionLabel'
 import { useAudience } from '@/lib/AudienceContext'
 import { AUDIENCE_OPTIONS, PORTFOLIO_CONTENT, PORTFOLIO_ITEMS } from '@/lib/data'
-import { cn, getYouTubeThumbnail } from '@/lib/utils'
+import { cn, getYouTubeThumbnail, PORTFOLIO_FILTER_EVENT } from '@/lib/utils'
 import type { AudienceCategory, PortfolioFilter, PortfolioItem } from '@/types'
 
 // Trabajos que se muestran por tanda (2 filas en escritorio) para no alargar la página.
@@ -49,6 +49,17 @@ export default function PortfolioSection() {
 
   // Al cambiar de categoría o formato se vuelve a mostrar solo la primera tanda.
   useEffect(() => setVisible(PAGE_SIZE), [activeFilter, audience])
+
+  // Los botones de servicios del hero aplican su filtro aquí (formato y categoría).
+  useEffect(() => {
+    const onFilter = (event: Event) => {
+      const detail = (event as CustomEvent<{ format: PortfolioFilter; audience: AudienceCategory | null }>).detail
+      setActiveFilter(detail.format)
+      setAudience(detail.audience)
+    }
+    window.addEventListener(PORTFOLIO_FILTER_EVENT, onFilter)
+    return () => window.removeEventListener(PORTFOLIO_FILTER_EVENT, onFilter)
+  }, [setAudience])
 
   const visibleItems = filteredItems.slice(0, visible)
   const remaining = filteredItems.length - visibleItems.length

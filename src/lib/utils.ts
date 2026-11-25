@@ -23,6 +23,9 @@ export function cn(...classes: ClassValue[]): string {
   return out.join(' ')
 }
 
+/** Evento que los botones de servicios disparan para aplicar filtros en el portafolio. */
+export const PORTFOLIO_FILTER_EVENT = 'wal:portfolio-filter'
+
 /**
  * Scroll suave hacia una sección por id, compensando el navbar fijo.
  */

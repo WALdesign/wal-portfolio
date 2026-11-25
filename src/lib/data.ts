@@ -21,10 +21,26 @@ export const SITE_CONFIG = {
 } as const
 
 export const SERVICES: Service[] = [
-  { n: '01', label: 'Fotografía', href: '#portafolio' },
-  { n: '02', label: 'Video', href: '#portafolio' },
-  { n: '03', label: 'Redes Sociales', href: '#portafolio' },
-  { n: '04', label: 'Eventos', href: '#planes' },
+  {
+    n: '01',
+    label: 'Fotografía',
+    href: '#portafolio',
+    filter: { format: 'foto', audience: null },
+  },
+  {
+    n: '02',
+    label: 'Video',
+    href: '#portafolio',
+    filter: { format: 'video', audience: null },
+  },
+  // No hay sección de redes en el portafolio: los planes son el contenido para redes.
+  { n: '03', label: 'Redes Sociales', href: '#planes' },
+  {
+    n: '04',
+    label: 'Eventos',
+    href: '#portafolio',
+    filter: { format: 'todo', audience: 'evento' },
+  },
 ]
 
 export const HERO_CONTENT: HeroContent = {

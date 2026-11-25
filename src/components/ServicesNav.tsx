@@ -2,7 +2,7 @@
 
 import type { CSSProperties } from 'react'
 
-import { cn, scrollToSection } from '@/lib/utils'
+import { cn, PORTFOLIO_FILTER_EVENT, scrollToSection } from '@/lib/utils'
 import type { Service } from '@/types'
 
 interface ServicesNavProps {
@@ -25,7 +25,14 @@ export default function ServicesNav({ items, className, style }: ServicesNavProp
         <button
           key={service.n}
           type="button"
-          onClick={() => scrollToSection(service.href.replace('#', ''))}
+          onClick={() => {
+            if (service.filter) {
+              window.dispatchEvent(
+                new CustomEvent(PORTFOLIO_FILTER_EVENT, { detail: service.filter })
+              )
+            }
+            scrollToSection(service.href.replace('#', ''))
+          }}
           className="wal-service-btn flex items-center"
           style={{
             gap: '10px',

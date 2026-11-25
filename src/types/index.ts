@@ -29,6 +29,8 @@ export interface Service {
   n: string
   label: string
   href: string
+  /** Filtros del portafolio que aplica el botón al abrirlo (sin filtro = portafolio tal como está). */
+  filter?: { format: PortfolioFilter; audience: AudienceCategory | null }
 }
 
 export interface PlanFeature {
