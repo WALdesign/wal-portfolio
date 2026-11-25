@@ -61,7 +61,8 @@ export default function CurtainHero({ children }: CurtainHeroProps) {
   }, [])
 
   return (
-    <div ref={wrapRef} style={{ position: 'sticky', top: 0, zIndex: 0 }}>
+    // Fondo negro sólido: al atenuarse el Hero, el footer que queda debajo no se transparenta a través de él.
+    <div ref={wrapRef} style={{ position: 'sticky', top: 0, zIndex: 0, backgroundColor: '#000000' }}>
       <div
         ref={innerRef}
         style={{ transformOrigin: 'center bottom', willChange: 'transform, opacity' }}
