@@ -61,7 +61,12 @@ export const AUDIENCE_OPTIONS: AudienceOption[] = [
     label: 'Hospedaje',
     hint: 'Cabañas, hoteles y estadías que se desean',
   },
-  { key: 'producto', n: '04', label: 'Producto', hint: 'Fotografía y video que hacen vender' },
+  {
+    key: 'producto',
+    n: '04',
+    label: 'Producto o servicio',
+    hint: 'Fotografía y video que hacen vender',
+  },
   { key: 'evento', n: '05', label: 'Evento', hint: 'Bodas, lanzamientos y recaps de marca' },
   {
     key: 'diseno-grafico',
